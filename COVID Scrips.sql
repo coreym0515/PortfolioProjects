@@ -1,0 +1,74 @@
+Select *
+From PortfolioProject..CovidDeaths
+Where continent is not null
+Order by 3,4
+
+--Select *
+--From PortfolioProject..CovidVaccinations
+--Order by 3,4
+
+--Select Data that we are going to be using
+Select Location, Date, total_cases, new_cases, total_deaths, population
+From PortfolioProject..CovidDeaths
+Order by 1,2
+
+
+-- Looking at total cases vs total deaths
+--Shows likelhood of death 
+
+Select Location, Date, total_cases, total_deaths, (total_deaths/total_cases)*100 as DeathPercentage
+From PortfolioProject..CovidDeaths
+Where location like '%states%'
+and total_cases is not null
+Order by 1,2
+
+
+-- Shows % of population that contracted Covid
+
+Select Location, Date, total_cases, population, (total_cases/population)*100 as PopulationPercentageInfected
+From PortfolioProject..CovidDeaths
+Where location like '%states%'
+and total_cases is not null
+Order by 1,2
+
+-- Looking at countries with highest infection rate compared to population
+
+Select Location, MAX(total_cases) as HighestInfectionCount, population, MAX((total_cases/population))*100 as PopulationPercentageInfected
+From PortfolioProject..CovidDeaths
+--Where location like '%states%'
+Group by Location, population
+Order by PopulationPercentageInfected desc
+
+--Showing countried with highest death count per population
+
+Select Location, MAX(cast(Total_deaths as int)) as TotalDeathCount
+From PortfolioProject..CovidDeaths
+--Where location like '%states%'
+Where continent is not null
+Group by Location
+Order by TotalDeathCount desc
+
+--BREAKING THINGS DOWN BY CONTINENT
+
+Select continent, MAX(cast(Total_deaths as int)) as TotalDeathCount
+From PortfolioProject..CovidDeaths
+--Where location like '%states%'
+Where continent is not null
+Group by continent
+Order by TotalDeathCount desc
+
+
+--GLOBAL NUMBERS
+
+Select  SUM(new_cases) as total_cases, SUM(cast(new_deaths as int)) as new_deaths, SUM(cast(new_deaths as int))/SUM(new_cases)*100 as DeathPercentage
+From PortfolioProject..CovidDeaths
+--Where location like '%states%'
+Where continent is not null
+and total_cases is not null
+--Group by date
+Order by 1,2
+
+
+
+Select *
+From PortfolioProject..CovidDeaths
